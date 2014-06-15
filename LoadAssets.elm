@@ -19,7 +19,7 @@ import Http
 
 {-|
 Generic type for any asset which is loaded remotely.
-|-}
+-}
 data Asset = 
   AssetLoading
   | AssetLoaded
@@ -27,7 +27,7 @@ data Asset =
   
 {-|
 Convert a response of any type to an `Asset`
-|-}
+-}
 toAsset : Http.Response a -> Asset
 toAsset resp = case resp of
   Http.Success _ -> AssetLoaded
@@ -36,7 +36,7 @@ toAsset resp = case resp of
 
 {-|
 Structure holding the load status of a number of assets
-|-}  
+-}  
 data Status = 
   InProgress Float
   | Complete
@@ -57,7 +57,7 @@ numLoading elList = foldr accumLoading 0 elList
 {-|
 Given a number of assets, generate their load status us a group.
 Useful for progress bars and loading screens.
-|-}
+-}
 toStatus : [Asset] -> Status
 toStatus els = let
     numEls = length els
@@ -72,7 +72,7 @@ toStatus els = let
 Get a value from an HTTP request.
 This is only safe to call if the asset being retrieved
 is in a load group that has evaluated to `Success`
-|-}
+-}
 fromResponseOrFail : Http.Response a -> a
 fromResponseOrFail r = case r of 
   Http.Success s -> s
