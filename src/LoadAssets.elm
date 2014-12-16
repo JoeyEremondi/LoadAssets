@@ -1,7 +1,5 @@
 module LoadAssets where
 
-import List
-
 {-| A library providing some utilites for loading a large number of resources
 of different types from a remote origin using HTTP,
 and querying how many of them are loaded.
@@ -18,6 +16,7 @@ and querying how many of them are loaded.
 -}
 
 import Http
+import List
 
 {-|
 Generic type for any asset which is loaded remotely.
