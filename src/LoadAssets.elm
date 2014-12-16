@@ -1,11 +1,13 @@
 module LoadAssets where
 
+import List
+
 {-| A library providing some utilites for loading a large number of resources
 of different types from a remote origin using HTTP,
 and querying how many of them are loaded.
 
 # Single assets
-@docs Asset, toAsset, 
+@docs Asset, toAsset 
 
 # Asset groups loaded together
 @docs Status, toStatus
@@ -20,7 +22,7 @@ import Http
 {-|
 Generic type for any asset which is loaded remotely.
 -}
-data Asset = 
+type Asset = 
   AssetLoading
   | AssetLoaded
   | AssetFailed (Int, String)
@@ -37,34 +39,37 @@ toAsset resp = case resp of
 {-|
 Structure holding the load status of a number of assets
 -}  
-data Status = 
+type Status = 
   InProgress Float
   | Complete
-  | Failed [(Int, String)]
+  | Failed (List (Int, String))
   
 
 addFailString el listSoFar = case el of
-  AssetFailed s -> listSoFar ++ [s]
+  AssetFailed intStr -> listSoFar ++ [intStr]
   _ -> listSoFar  
 
 accumLoading el numSoFar = case el of
   AssetLoading -> numSoFar + 1
   _ -> numSoFar
-  
-failStrings elList = foldr addFailString [] elList
-numLoading elList = foldr accumLoading 0 elList
+
+failStrings : List Asset -> List (Int, String)
+failStrings elList = List.foldr addFailString [] elList
+
+
+numLoading elList = List.foldr accumLoading 0 elList
 
 {-|
 Given a number of assets, generate their load status us a group.
 Useful for progress bars and loading screens.
 -}
-toStatus : [Asset] -> Status
+toStatus : (List Asset) -> Status
 toStatus els = let
-    numEls = length els
+    numEls = List.length els
     fails = failStrings els
     num = numLoading els
   in if
-    | not <| isEmpty fails -> Failed fails
+    | not <| List.isEmpty fails -> Failed fails
     | num > 0 -> InProgress <| (100.0 * (toFloat num)) / (toFloat numEls)    
     | otherwise -> Complete
 
